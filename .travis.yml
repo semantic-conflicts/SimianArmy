@@ -1,3 +1,26 @@
+
+sudo: required
 language: java
+
 jdk:
-  - openjdk6
+  - openjdk8
+
+script:
+  - ./gradlew fatJar
+
+before_deploy:
+    - mkdir MiningBuild
+    - find . -name '*.jar' -exec cp {} ./MiningBuild \;
+    - cd /home/travis/build/semantic-conflicts/SimianArmy/MiningBuild
+    - tar -zcvf result.tar.gz *
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file: result.tar.gz
+  name: fetchjar-c39c19bc6b9231601f6bc7358e638a99adf37e0d
+  file_glob: true
+  overwrite: true
+  skip_cleanup: true
+  on:
+    all_branches: true 
+            
